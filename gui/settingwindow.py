@@ -1,10 +1,9 @@
-import wx, os, json
-from wx import *
-from wx.lib.splitter import MultiSplitterWindow
-import numpy as np
 import collections
-import wx.lib.agw.gradientbutton as gbtn
 
+import json
+import os
+import wx
+from wx import *
 
 
 class SettingFrame(wx.Frame):
@@ -18,7 +17,6 @@ class SettingFrame(wx.Frame):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(self.MainPanel, wx.GROW)
         self.SetSizerAndFit(sizer)
-
 
 
 class MainSettingPanel(wx.Panel):
@@ -41,12 +39,12 @@ class MainSettingPanel(wx.Panel):
         self.buttonpanel.loadbutton.Bind(EVT_BUTTON, self.load)
 
     def save(self, event):
-        #investigating using label instead of Id --- makes it much more readable
+        # investigating using label instead of Id --- makes it much more readable
         for idx, item in enumerate(self.settingpanel.textinputs):
-            x = self.settingpanel.FindWindowById(idx+1).GetValue()
-            y = self.settingpanel.FindWindowById((idx+1)*100).GetValue()
+            x = self.settingpanel.FindWindowById(idx + 1).GetValue()
+            y = self.settingpanel.FindWindowById((idx + 1) * 100).GetValue()
             if item != 'Segments':
-                unit = self.settingpanel.FindWindowById((idx+1)*1001).GetValue()
+                unit = self.settingpanel.FindWindowById((idx + 1) * 1001).GetValue()
             self.settingdata[item] = ([x, y, unit])
 
         self.settingdata['Filter'] = self.settingpanel.FindWindowById(1000).GetValue()
@@ -116,13 +114,13 @@ class SettingPanel(wx.Panel):
         for idx, item in enumerate(self.textinputs):
             header = wx.StaticText(self, label=item)
             if header.GetLabel() == 'Segments':
-                #sizer.Add(['Number of Segments', wx.TextCtrl)] add this later to get multiple segments
-                #for i = 1: wx.TextCtr-output:
+                # sizer.Add(['Number of Segments', wx.TextCtrl)] add this later to get multiple segments
+                # for i = 1: wx.TextCtr-output:
                 sizer.AddMany([header, self.segmentfields(idx + 1)])
             else:
-                sizer.AddMany([header, self.xyfields(idx+1)])
+                sizer.AddMany([header, self.xyfields(idx + 1)])
 
-        sizer.AddMany([wx.StaticText(self, label='PixelToCM_Ratio'), wx.TextCtrl(self, id= 25)])
+        sizer.AddMany([wx.StaticText(self, label='PixelToCM_Ratio'), wx.TextCtrl(self, id=25)])
         return sizer
 
     def checkwidgets(self):
@@ -130,7 +128,7 @@ class SettingPanel(wx.Panel):
         id = 1000
         for item in self.checkinputs:
             header = wx.StaticText(self, label=item)
-            check = wx.CheckBox(self, id =id)
+            check = wx.CheckBox(self, id=id)
             id += 1
             minisizer = wx.BoxSizer(wx.HORIZONTAL)
             minisizer.AddMany([header, check])
@@ -148,26 +146,25 @@ class SettingPanel(wx.Panel):
         sizer.AddMany([header, units])
         return sizer
 
-    def xyfields(self,id):
+    def xyfields(self, id):
         x = wx.StaticText(self, label='X')
         y = wx.StaticText(self, label='Y')
-        unit =  wx.StaticText(self, label='Unit')
+        unit = wx.StaticText(self, label='Unit')
         xinput = wx.TextCtrl(self, id=id)
-        yinput = wx.TextCtrl(self, id=id*100)
-        unitinput = wx.TextCtrl(self, id=id*1001)
+        yinput = wx.TextCtrl(self, id=id * 100)
+        unitinput = wx.TextCtrl(self, id=id * 1001)
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.AddMany([x, xinput, y, yinput, unit, unitinput])
         return sizer
 
-    def segmentfields(self,id):
+    def segmentfields(self, id):
         x = wx.StaticText(self, label='Start')
         y = wx.StaticText(self, label='End')
         xinput = wx.TextCtrl(self, id=id)
-        yinput = wx.TextCtrl(self, id=id*100)
+        yinput = wx.TextCtrl(self, id=id * 100)
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.AddMany([x, xinput, y, yinput])
         return sizer
-
 
 
 class SettingsList(wx.ListCtrl):
@@ -180,12 +177,11 @@ class SettingsList(wx.ListCtrl):
             self.InsertItem(0, item)
 
     def refresh(self):
-        #find a nicer way to do this
+        # find a nicer way to do this
         self.DeleteAllItems()
         all_settings = [x for x in os.listdir(self.settingfolder) if x.endswith(".json")]
         for item in all_settings:
             self.InsertItem(0, item)
-
 
 
 class SettingButtonPanel(wx.Panel):
@@ -223,9 +219,6 @@ class SettingButtonPanel(wx.Panel):
 
     def load(self, e):
         e.Skip()
-
-
-
 
 
 if __name__ == "__main__":

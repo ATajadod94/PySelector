@@ -10,5 +10,6 @@ from gui import mainwindow
 def main():
     mainwindow.run()
 
+
 if __name__ == "__main__":
     main()

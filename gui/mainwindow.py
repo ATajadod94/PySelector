@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 import logging
 
+
 class MyApp(wx.App):
     def OnInit(self):
         self.mainframe = MyFrame(None)
@@ -22,13 +23,12 @@ class MyFrame(wx.Frame):
     def __init__(self, parent):
         super().__init__(parent, -1, "PySelect")
         ## Attributes
-             # GUI
+        # GUI
         self.parent = parent
         self.setting_json = Path('setting/settings.json')
         self.MainPanel = MainPanel(self)
         self.MainPanel.ButtonPanel.SetFocus()
         self.PopupMenu = PopupMenu(self)
-
 
         # Local Variables
         icon_path = os.path.join(os.getcwd(), 'gui', 'icons', 'appicon.png')
@@ -43,8 +43,6 @@ class MyFrame(wx.Frame):
 
         self.MainPanel.Bind(wx.EVT_KEY_DOWN, self.MainPanel.ButtonPanel.keypressed)
         self.PopupMenu.Bind(wx.EVT_KEY_DOWN, self.MainPanel.ButtonPanel.keypressed)
-
-
 
     def set_settings(self, exp_name):
         self.MainPanel.set_settings(exp_name)
@@ -61,10 +59,10 @@ class MyFrame(wx.Frame):
 
     def set_exp(self, setting_name):
         self.MainPanel.set_exp(setting_name)
-    
+
     def set_size(self, size):
-        self.SetSize(size) 
-               
+        self.SetSize(size)
+
     def OnClose(self, event):
         self.Destroy()
         logging.info('Finished')
@@ -97,8 +95,8 @@ class MainPanel(wx.Panel):
     def __dolayout(self):
         MainPanelSizer = wx.GridBagSizer(10, 10)
         MainPanelSizer.Add(self.ReachCanvas, pos=(0, 1), span=(1, 1), flag=wx.ALIGN_CENTRE | wx.GROW)
-        MainPanelSizer.Add(self.VelocityCanvas, pos=(1, 1), span=(1, 1), flag = wx.ALIGN_CENTRE | wx.GROW)
-        MainPanelSizer.Add(self.ButtonPanel, pos=(1, 0), span=(1, 1), flag = wx.GROW)
+        MainPanelSizer.Add(self.VelocityCanvas, pos=(1, 1), span=(1, 1), flag=wx.ALIGN_CENTRE | wx.GROW)
+        MainPanelSizer.Add(self.ButtonPanel, pos=(1, 0), span=(1, 1), flag=wx.GROW)
         MainPanelSizer.Add(self.InfoPanel, pos=(0, 0), span=(1, 1), flag=wx.ALIGN_CENTRE | wx.GROW)
         MainPanelSizer.AddGrowableCol(1)
         MainPanelSizer.AddGrowableCol(0)
@@ -116,13 +114,14 @@ class MainPanel(wx.Panel):
     def __setvelocityplot(self):
         fig = plt.figure()
         fig.add_axes([0.1, 0.3, 0.8, 0.4])
-        fig.set_size_inches(3,3)
+        fig.set_size_inches(3, 3)
         self.VelocityCanvas = FigureCanvas(self, -1, fig)
 
     def __updatereachplot(self):
         # this is somewhat prone to errors, it should be fine as long as the program  runs velocity plots
         # before reach plots though as it does now.
-        selection = self.trial_data.index[self.trial_data.time_ms.between(self.trial_data.selectedp1, self.trial_data.selectedp2)]
+        selection = self.trial_data.index[
+            self.trial_data.time_ms.between(self.trial_data.selectedp1, self.trial_data.selectedp2)]
         self.trial_data.loc[selection, 'selected'] = 1
         fig = reach_profiler(self.trial_data, self.setting, self.experiment['all_targets'])
         fig.gca().set_aspect('auto')
@@ -135,7 +134,7 @@ class MainPanel(wx.Panel):
             self.ButtonPanel.FixP1P2.Value = 0
             self.ButtonPanel.SetMax.Value = 1
             selection_index = [_ for _, val in zip(self.trial_data['time_ms'].index, self.trial_data['time_ms'])
-                            if val >= self.trial_data.selectedp1 and val <= self.trial_data.selectedp2]
+                               if val >= self.trial_data.selectedp1 and val <= self.trial_data.selectedp2]
             self.trial_data.selected = 0
             self.trial_data.selected[selection_index] = 1
             self.selected_velocity = 'pyselect'
@@ -145,8 +144,9 @@ class MainPanel(wx.Panel):
             logging.debug('p2 value on fixp1p2: {}'.format(self.trial_data.selectedp2))
 
             if ~(self.trial_data.selectedp1 <= self.trial_data.selectedmaxvelocity <= self.trial_data.selectedp2):
-                    self.max_position = velocity_profiler(self.trial_data, 'update')
-                    self.VelocityCanvas.figure.get_axes()[0].get_children()[1].set_xdata(self.trial_data.selectedmaxvelocity)
+                self.max_position = velocity_profiler(self.trial_data, 'update')
+                self.VelocityCanvas.figure.get_axes()[0].get_children()[1].set_xdata(
+                    self.trial_data.selectedmaxvelocity)
             logging.debug('maxvelocity on fixp1p2: {}'.format(self.trial_data.selectedmaxvelocity))
             self.VelocityCanvas.figure.gca().set_aspect('auto')
             self.VelocityCanvas.draw()
@@ -162,7 +162,8 @@ class MainPanel(wx.Panel):
             elif self.selected_velocity is 'user':
                 logging.debug('maxvelocity on user select: {}'.format(self.trial_data.selectedmaxvelocity))
                 # maybe do this differently (outsource to a function?) . Consider this later.
-                self.VelocityCanvas.figure.get_axes()[0].get_children()[1].set_xdata(self.trial_data.selectedmaxvelocity)
+                self.VelocityCanvas.figure.get_axes()[0].get_children()[1].set_xdata(
+                    self.trial_data.selectedmaxvelocity)
                 self.selected_velocity = 'pyselect'
 
             self.VelocityCanvas.figure.gca().set_aspect('auto')
@@ -228,16 +229,16 @@ class MainPanel(wx.Panel):
         self.Layout()
 
     def updateoutput(self):
-        maxvel_idx = next(x[0] for x in enumerate(self.trial_data.time_ms) if x[1] >= self.trial_data.selectedmaxvelocity)
+        maxvel_idx = next(
+            x[0] for x in enumerate(self.trial_data.time_ms) if x[1] >= self.trial_data.selectedmaxvelocity)
         p1_idx = next(x[0] for x in enumerate(self.trial_data.time_ms) if x[1] >= self.trial_data.selectedp1)
-        p2_idx = next(x[0]+1 for x in enumerate(self.trial_data.time_ms) if x[1] >= self.trial_data.selectedp2)
+        p2_idx = next(x[0] + 1 for x in enumerate(self.trial_data.time_ms) if x[1] >= self.trial_data.selectedp2)
         self.trial_data.selected.iloc[p1_idx:p2_idx] = 1
         self.trial_data.max_velocity.iloc[maxvel_idx] = 1
         self.experiment['output'].update(self.trial_data)
 
     def outputdata(self):
         self.experiment['output'].to_csv(os.path.join(self.experiment_path, self.output_name + '.csv'), index=False)
-
 
 
 class InfoPanel(wx.Panel):
@@ -248,7 +249,7 @@ class InfoPanel(wx.Panel):
         self.BackgroundColour = wx.Colour('GRAY')
         self.setting = wx.StaticText(self, -1, 'None')
         self.trial_mode = wx.StaticText(self, -1, 'not_selected')
-        self.experiment = wx.StaticText(self, -1,'none')
+        self.experiment = wx.StaticText(self, -1, 'none')
         self.trial = wx.StaticText(self, -1, '0/0')
 
         settinglabel = wx.StaticText(self, -1, "Setting:")
@@ -256,12 +257,10 @@ class InfoPanel(wx.Panel):
         triallabel = wx.StaticText(self, -1, "Trials:")
         acceptedlabel = wx.StaticText(self, -1, "Trial_mode:")
 
-
-
-        sizer = wx.GridSizer(rows=4, cols =2, hgap=5, vgap=5)
+        sizer = wx.GridSizer(rows=4, cols=2, hgap=5, vgap=5)
 
         sizer.AddMany([settinglabel, self.setting, experimentlabel, self.experiment,
-                       triallabel, self.trial, acceptedlabel,  self.trial_mode])
+                       triallabel, self.trial, acceptedlabel, self.trial_mode])
         self.SetSizer(sizer)
 
     def update(self):
@@ -285,7 +284,6 @@ class InfoPanel(wx.Panel):
 
         self.parent.set_trial_data(self.current_trial)
 
-
     def set_exp(self, exp_name, experiment):
         self.experiment.SetLabel(exp_name)
         # ====  RECODE maybe? / there has to be a nicer way of handling this
@@ -305,7 +303,6 @@ class InfoPanel(wx.Panel):
             self.trial_mode.SetLabel('Not_Seleted')
 
 
-
 class ButtonPanel(wx.Panel):
     def __init__(self, parent):
         super().__init__(parent=parent)
@@ -314,23 +311,23 @@ class ButtonPanel(wx.Panel):
         self.Unsure = wx.CheckBox(self, size=(100, 10), label="Unsure")
         self.Save = wx.ToggleButton(self, label="Accept")
         self.SetMax = wx.ToggleButton(self, label=" Max Velocity")
-        self.FixP1P2 = wx.ToggleButton(self, label= "Fix P1 P2")
+        self.FixP1P2 = wx.ToggleButton(self, label="Fix P1 P2")
         self.Delete = wx.ToggleButton(self, label="Reject ")
         self.Goto = wx.TextCtrl(self)
-        self.GotoButton = wx.Button(self, label= "Go")
+        self.GotoButton = wx.Button(self, label="Go")
         self.Next = wx.Button(self, label="Next")
         self.Previous = wx.Button(self, label="Previous")
         self.BackgroundColour = wx.Colour('GRAY')
 
         goto_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        goto_sizer.AddMany([(self.Goto, 1/3), (self.GotoButton,2/3)])
+        goto_sizer.AddMany([(self.Goto, 1 / 3), (self.GotoButton, 2 / 3)])
         self.gridSizer = wx.GridSizer(rows=4, cols=2, hgap=2, vgap=2)
         self.gridSizer.AddMany([
             (self.FixP1P2, wx.ALIGN_CENTER), (self.SetMax, wx.ALIGN_CENTER),
             goto_sizer, (self.Unsure, wx.ALIGN_CENTER),
             (self.Save, wx.ALIGN_CENTER), (self.Delete, wx.ALIGN_CENTER),
             (self.Previous), (self.Next)
-            ])
+        ])
         self.SetSizer(self.gridSizer)
 
         self.SetMax.Value = 1
@@ -345,7 +342,7 @@ class ButtonPanel(wx.Panel):
         self.Bind(wx.EVT_TOGGLEBUTTON, self.unsuretrial, self.Unsure)
         self.Bind(wx.EVT_TOGGLEBUTTON, self.savetrial, self.Save)
         self.Bind(wx.EVT_TOGGLEBUTTON, self.deltrial, self.Delete)
-        self.Bind(wx.EVT_BUTTON,  self.jumptotrial, self.GotoButton)
+        self.Bind(wx.EVT_BUTTON, self.jumptotrial, self.GotoButton)
 
         self.Bind(wx.EVT_KEY_DOWN, self.keypressed)
 
@@ -357,7 +354,7 @@ class ButtonPanel(wx.Panel):
         elif e.KeyCode == wx.WXK_DOWN:
             self.savetrial(e)
 
-    def nexttrial(self,e):
+    def nexttrial(self, e):
         if self.parent.trial_data.accept.min():
             self.parent.updateoutput()
             self.parent.InfoPanel.update_trial_index('up')
@@ -435,10 +432,9 @@ class PopupMenu(wx.MenuBar):
 
         # settingmenu buttons
 
-        settingfolder = self.settingsmenu.Append(-1,  "Setting Folder")
+        settingfolder = self.settingsmenu.Append(-1, "Setting Folder")
         settingchoice = self.settingsmenu.Append(-1, 'Quick Setting...', self.savedsettings)
         newsetting = self.settingsmenu.Append(-1, 'Interactive Setting')
-
 
         # filemenu buttons
         loaddata = self.filemenu.Append(-1, 'load')
@@ -492,6 +488,7 @@ class PopupMenu(wx.MenuBar):
         for item in all_settings:
             self.savedsettings.Append(-1, item)
 
+
 def run():
     logging.basicConfig(filename='setting/mylog.log', level=logging.DEBUG, format='%(asctime)s %(message)s')
     logging.info('================= \n')
@@ -502,8 +499,5 @@ def run():
     logging.info('Finished')
 
 
-
-
 if __name__ == "__main__":
     run()
-

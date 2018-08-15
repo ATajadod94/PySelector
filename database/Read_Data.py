@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+
 import numpy as np
 import pandas as pd
 
@@ -14,7 +15,8 @@ def set_data(data_address, setting_locator, setting_name):
     else:
         if setting['Header']:
             setting['Header'] = eval(setting['Header'])
-            assert (len(setting['Header']) == len(pd.read_csv(data_address, sep='\t').columns)), 'Column numbers do NOT match'
+            assert (len(setting['Header']) == len(
+                pd.read_csv(data_address, sep='\t').columns)), 'Column numbers do NOT match'
             for idx, item in enumerate(setting['Header']):
                 if item in ['', [], ' ', 'unused']:
                     setting['Header'][idx] = 'unused' + str(idx)
@@ -34,7 +36,6 @@ def set_data(data_address, setting_locator, setting_name):
 
 
 def set_experiment(data, setting):
-
     cfg = {}
     cfg['Trial'] = {}
     target_locations = np.unique(list(zip(list(data.targetx_cm), list(data.targety_cm))), axis=0)
@@ -51,10 +52,9 @@ def set_experiment(data, setting):
     step_start = setting['Segments'][0]
     step_end = setting['Segments'][1]
 
-
-    for name, group in data.groupby(['trial_no']) :  ##looking through trials
+    for name, group in data.groupby(['trial_no']):  ##looking through trials
         if hasattr(group, 'accept') and np.unique(group.accept) in [1, -1]:
-                continue
+            continue
         if step_start is '':
             data.loc[group.index, 'selected'] = 1
         else:
@@ -65,8 +65,10 @@ def set_experiment(data, setting):
 
     return cfg
 
+
 def unify_data(data, setting):
-    data.dropna(inplace=True)  # remove any rows or columns with Nan's (maybe add a special pop up for this? some notice)
+    data.dropna(
+        inplace=True)  # remove any rows or columns with Nan's (maybe add a special pop up for this? some notice)
     if setting['Display Origin'] == ['', '', '']:
         setting['Display Origin'] = [528, 395, 'px']
 
@@ -95,7 +97,7 @@ def unify_data(data, setting):
                 if unit == 'px':
                     data.insert(data.columns.get_loc(key), 'cursorx_cm',
                                 (data.cursorx_px.astype('float') - setting['Display Origin'][0]) * float(
-                                          setting['PX_CM_Ratio']))
+                                    setting['PX_CM_Ratio']))
                     data.drop(key, axis=1, inplace=True)
                 elif unit == 'cm':
                     keyloc = data.columns.get_loc(key)
@@ -128,7 +130,7 @@ def unify_data(data, setting):
                                 (data.cursory_px.astype('float') - setting['Display Origin'][1]) * float(
                                     setting['PX_CM_Ratio']))
                     data['handx_cm'] = (data[key].astype('float') - setting['Display Origin'][1]) \
-                                            * float(setting['PX_CM_Ratio'])
+                                       * float(setting['PX_CM_Ratio'])
                     data.drop(key, axis=1, inplace=True)
                 elif unit == 'cm':
                     keyloc = data.columns.get_loc(key)
@@ -166,7 +168,6 @@ def unify_data(data, setting):
                 elif unit == 'cm':
                     data[key] = data[key].astype('float')
 
-
             if key.startswith('targety'):
                 unit = key.split('_')[1]
                 if unit == 'px':
@@ -183,4 +184,4 @@ def unify_data(data, setting):
                     data[key] = data[key].astype('float')
 
             if key.startswith('step'):
-                    data[key] = data[key].astype('int')
+                data[key] = data[key].astype('int')

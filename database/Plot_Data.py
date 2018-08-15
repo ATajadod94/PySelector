@@ -1,8 +1,8 @@
-from scipy.interpolate import interp1d
-from scipy import signal
-from matplotlib import pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
+from matplotlib import pyplot as plt
+from scipy import signal
+from scipy.interpolate import interp1d
 
 # Turn interactive plotting off
 plt.ioff()
@@ -18,17 +18,19 @@ def velocity_profiler(data, velocity_choice):
 
 
 def reach_profiler(data, setting, targets):
-    return reachprofile(data, setting , targets)
+    return reachprofile(data, setting, targets)
+
 
 def velocityupdate(data):
     start_time = data.selectedp1
     end_time = data.selectedp2
     selection_index = [_ for _, val in enumerate(data.Interpolated[1]) if val > start_time and val < end_time]
-    interpolated_speed, interpolated_time = data.Interpolated[0][selection_index] , data.Interpolated[1][selection_index]
+    interpolated_speed, interpolated_time = data.Interpolated[0][selection_index], data.Interpolated[1][selection_index]
     maxspeedidx = interpolated_speed.argmax()
     data.selectedmaxvelocity = interpolated_time[maxspeedidx]
     max_position = [data.handx_cm.iloc[maxspeedidx], data.handy_cm.iloc[maxspeedidx]]
     return max_position
+
 
 def velocityprofile(data):
     if not (hasattr(data, 'Interpolated_speed')):
@@ -39,7 +41,7 @@ def velocityprofile(data):
             raise Exception('There is no hand data, please check your settings')
 
         ## Time calculations
-        interpolated_time = np.linspace(data['time_ms'].iloc[0], data['time_ms'].iloc[-1],  endpoint=True)
+        interpolated_time = np.linspace(data['time_ms'].iloc[0], data['time_ms'].iloc[-1], endpoint=True)
         xpoly, ypoly = xpoly(interpolated_time), ypoly(interpolated_time)
 
         nyquist = data['time_ms'].diff().mean()
@@ -52,29 +54,30 @@ def velocityprofile(data):
         data.Interpolated = [interpolated_speed,
                              interpolated_time]  # we can treat data as-if it was passed by reference here
 
-
         data.RealSpeed = calculate_speeds(data.handx_cm.astype('float'), data.handy_cm.astype('float'),
-                                              data['time_ms'])
+                                          data['time_ms'])
 
         max_velocity = interpolated_speed.max()
         p1_speed = max_velocity * 0.1
         p1idx = np.argmax(interpolated_speed > p1_speed)
         maxspeedidx = interpolated_speed.argmax()
-        p2idx = maxspeedidx+1 + np.argmax(interpolated_speed[maxspeedidx+1::] <= p1_speed)
+        p2idx = maxspeedidx + 1 + np.argmax(interpolated_speed[maxspeedidx + 1::] <= p1_speed)
         data.selectedp1 = next(x for x in data['time_ms'] if x > interpolated_time[p1idx])
         data.selectedp2 = next(x for x in data['time_ms'] if x >= interpolated_time[p2idx])
-        data.selectedmaxvelocity =interpolated_time[maxspeedidx]
+        data.selectedmaxvelocity = interpolated_time[maxspeedidx]
         data.selected = 0
         selectedindex = (data['time_ms'] >= data.selectedp1) & (data['time_ms'] <= data.selectedp2)
         data.selected[selectedindex] = 1
 
-
     selection_starttime = data[data.selected == 1].iloc[0].time_ms
     selection_endtime = data[data.selected == 1].iloc[-1].time_ms
 
-    interpolated_time = data.Interpolated[1][(data.Interpolated[1] > selection_starttime) & (data.Interpolated[1] < selection_endtime)]
-    interpolated_speed = data.Interpolated[0][(data.Interpolated[1] > selection_starttime) & (data.Interpolated[1] < selection_endtime)]
-    interpolated_selected_idx = np.where((data.Interpolated[1] > selection_starttime) & (data.Interpolated[1] < selection_endtime))
+    interpolated_time = data.Interpolated[1][
+        (data.Interpolated[1] > selection_starttime) & (data.Interpolated[1] < selection_endtime)]
+    interpolated_speed = data.Interpolated[0][
+        (data.Interpolated[1] > selection_starttime) & (data.Interpolated[1] < selection_endtime)]
+    interpolated_selected_idx = np.where(
+        (data.Interpolated[1] > selection_starttime) & (data.Interpolated[1] < selection_endtime))
 
     maxspeed = interpolated_speed.max()
     maxspeedidx = np.where(data.Interpolated[0] == maxspeed)[0][0]
@@ -92,33 +95,34 @@ def velocityprofile(data):
         p1_idx = np.where(data.Interpolated[0] == p1_speed)[0][0]
 
     data.selectedp1 = next(x for x in data['time_ms'] if x > data.Interpolated[1][p1_idx])
-    p2_idx = np.argmax(data.Interpolated[0][maxspeedidx+1::] < (maxspeed * 0.1))
+    p2_idx = np.argmax(data.Interpolated[0][maxspeedidx + 1::] < (maxspeed * 0.1))
     if p2_idx == 0:
         p2_idx = -2
     else:
-        p2_idx += maxspeedidx+1
+        p2_idx += maxspeedidx + 1
     data.selectedp2 = next(x for x in data['time_ms'] if x > data.Interpolated[1][p2_idx])
     maxspeedidx = np.where(data.time_ms >= data.selectedmaxvelocity)[0][0]
     max_position = [data.handx_cm.iloc[maxspeedidx], data.handy_cm.iloc[maxspeedidx]]
 
-
     fig = plt.figure(facecolor='gray', edgecolor='r')
-    ax =fig.add_axes([0.1, 0.2,0.8, 0.6])
+    ax = fig.add_axes([0.1, 0.2, 0.8, 0.6])
 
     ax.plot(data.Interpolated[1], data.Interpolated[0])
-    ax.axvline(data.selectedmaxvelocity, ymax=max(data.Interpolated[1]),  color='r', label='velocity')
+    ax.axvline(data.selectedmaxvelocity, ymax=max(data.Interpolated[1]), color='r', label='velocity')
     ax.axvline(data.selectedp1, ymax=max(data.Interpolated[1]), color='b', label='p1')
     ax.axvline(data.selectedp2, ymax=max(data.Interpolated[1]), color='b', label='p2')
     plt.close()
     return fig, max_position
 
+
 def reachprofile(data, setting, targets):
     selected_data = data.index[data.selected == 1].tolist()
     reachplotdata = data.loc[selected_data].copy()
-    maxspeedidx = next(_ for _, x in enumerate(reachplotdata['time_ms']) if x >= data.selectedmaxvelocity.astype('float'))
+    maxspeedidx = next(
+        _ for _, x in enumerate(reachplotdata['time_ms']) if x >= data.selectedmaxvelocity.astype('float'))
 
     max_pen_position = [float(reachplotdata.handx_cm.iloc[maxspeedidx]),
-                            float(reachplotdata.handy_cm.iloc[maxspeedidx])]
+                        float(reachplotdata.handy_cm.iloc[maxspeedidx])]
 
     max_cursor_position = [float(reachplotdata.cursorx_cm.iloc[maxspeedidx]),
                            float(reachplotdata.cursory_cm.iloc[maxspeedidx])]
@@ -150,9 +154,9 @@ def reachprofile(data, setting, targets):
     ax.set_ylim([left, right])
     ax.set_xlim([left, right])
 
-    ax.plot(reachplotdata.handx_cm.astype('float'), reachplotdata.handy_cm.astype('float'), 'g', linestyle= ' ', marker="o", fillstyle='none')
+    ax.plot(reachplotdata.handx_cm.astype('float'), reachplotdata.handy_cm.astype('float'), 'g', linestyle=' ',
+            marker="o", fillstyle='none')
     ax.plot(reachplotdata.cursorx_cm.astype('float'), reachplotdata.cursory_cm.astype('float'), 'r')
-
 
     for target in targets:
         all_targets = patches.Circle(target, radius=.5, color='g', fill=False)
