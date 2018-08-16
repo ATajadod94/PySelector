@@ -9,6 +9,14 @@ plt.ioff()
 
 
 def velocity_profiler(data, velocity_choice):
+    """
+    The velocity_profiler handles passing the velocity_profile request to the appropriate method
+    :param data: A dataframe holding information about one trial
+    :param velocity_choice: A string identifying where the request for velocity profile came from (pyselect, User
+    , or update)
+    :return: Returns a max_position list (on update) or a figure and a max_position list (on Pyselect). On user selection
+    , it does not return anything
+    """
     if velocity_choice is 'pyselect':
         return velocityprofile(data)
     elif velocity_choice is 'user':
@@ -18,10 +26,22 @@ def velocity_profiler(data, velocity_choice):
 
 
 def reach_profiler(data, setting, targets):
+    """
+    The reach_profiler method calls the reachprofile method. It can be expanded on in the future for more flexibility
+    :param data: A dataframe holding information about one trial
+    :param setting: Setting dictionary for the loaded experiment
+    :param targets: List of all the targets in the loaded experiment
+    :return: Returns the reachprofile figure
+    """
     return reachprofile(data, setting, targets)
 
 
 def velocityupdate(data):
+    """
+    The velocityupdate method calculates the max velocity position based on the interpolated data
+    :param data: A Pandas dataframe for one trial.  The dataframe must also hold the interpolated information as an attribute
+    :return: Returns a max_position list
+    """
     start_time = data.selectedp1
     end_time = data.selectedp2
     selection_index = [_ for _, val in enumerate(data.Interpolated[1]) if val > start_time and val < end_time]

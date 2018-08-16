@@ -6,6 +6,13 @@ import pandas as pd
 
 
 def set_data(data_address, setting_locator, setting_name):
+    """
+    The set_data method will load the data and format the data based on the setting
+    :param data_address: A string identifying the location of data
+    :param setting_locator: A string identifying the setting folder
+    :param setting_name: A string identifying the setting name
+    :return: a configuration dictionary and a setting dictionary
+    """
     setting_path = Path(setting_locator) / (setting_name + '.json')
     with open(setting_path, 'r') as fp:
         setting = json.loads(fp.read())
@@ -36,6 +43,13 @@ def set_data(data_address, setting_locator, setting_name):
 
 
 def set_experiment(data, setting):
+    """
+    The set_experiment method handles experiment specific settings such as steps and target locations and groups the
+    data by trials.
+    :param data: A unified dataframe with appropriate heads and units
+    :param setting: A setting dictionary read from file
+    :return: A experiment specific configuration dictionary
+    """
     cfg = {}
     cfg['Trial'] = {}
     target_locations = np.unique(list(zip(list(data.targetx_cm), list(data.targety_cm))), axis=0)
@@ -67,6 +81,12 @@ def set_experiment(data, setting):
 
 
 def unify_data(data, setting):
+    """
+    The unify_data method converts all data to Pyselector appropriate units
+    :param data: Pandas dataframe read from the specified file
+    :param setting: Setting dictionary read as json
+    :return: Unify data does not return anything as the data dataframe is passed by reference
+    """
     data.dropna(
         inplace=True)  # remove any rows or columns with Nan's (maybe add a special pop up for this? some notice)
     if setting['Display Origin'] == ['', '', '']:
