@@ -7,7 +7,15 @@ from wx import *
 
 
 class SettingFrame(wx.Frame):
+    """
+    The only frame for the setting window
+    """
     def __init__(self, parent, setting_folder):
+        """
+        The constructor method creates and fits the panel for setting window.
+        :param parent:
+        :param setting_folder:
+        """
         super().__init__(parent=parent)
 
         # Attributes
@@ -20,7 +28,16 @@ class SettingFrame(wx.Frame):
 
 
 class MainSettingPanel(wx.Panel):
+    """
+    The mainsettingpanell contains the settingpanel, settinglist and the buttonpanel for interaction
+    """
     def __init__(self, parent, setting_folder):
+        """
+        The constructor method creates the setting panel , the setting list and the button panel. It also creates and
+        sets the sizer for the main panel and binds buttons.
+        :param parent:
+        :param setting_folder:
+        """
         super().__init__(parent=parent)
         self.parent = parent
 
@@ -38,7 +55,12 @@ class MainSettingPanel(wx.Panel):
         self.buttonpanel.savebutton.Bind(EVT_BUTTON, self.save)
         self.buttonpanel.loadbutton.Bind(EVT_BUTTON, self.load)
 
-    def save(self, event):
+    def save(self, e):
+        """
+        the save method is bound to the save button of the button panel. It creates a json file of the created or altered
+        settings and saves it to the global setting folder.
+        :param e: the event object instance is not used.
+        """
         # investigating using label instead of Id --- makes it much more readable
         for idx, item in enumerate(self.settingpanel.textinputs):
             x = self.settingpanel.FindWindowById(idx + 1).GetValue()
@@ -67,6 +89,11 @@ class MainSettingPanel(wx.Panel):
         self.Layout()
 
     def load(self, e):
+        """
+        The load method is bound to the load button in the buttonpanel. It displays information of the selected
+        settings from the json file.
+        :param e: The event object instance is not used.
+        """
         selected_setting = self.settinglist.GetItem(self.settinglist.GetFocusedItem()).GetText()
         set_name = os.path.join(self.setting_folder, selected_setting)
         with open(set_name, 'r') as fp:
@@ -93,6 +120,10 @@ class MainSettingPanel(wx.Panel):
 
 
 class SettingPanel(wx.Panel):
+    """
+    The settingpanel contains all the buttons and inputs for creating settings. It also creates and sets the sizer for
+    the pane/
+    """
     def __init__(self, parent):
         super().__init__(parent=parent)
 
@@ -109,6 +140,10 @@ class SettingPanel(wx.Panel):
         self.SetSizer(sizer)
 
     def textwidgets(self):
+        """
+        The textwidgets method creates a vertical wx.boxsizer for the the text inputs available in the setting panel.
+        :return: The wx.boxsizer instance, containing the statictext buttons and input fields is returned
+        """
         sizer = wx.BoxSizer(wx.VERTICAL)
 
         for idx, item in enumerate(self.textinputs):
@@ -124,6 +159,11 @@ class SettingPanel(wx.Panel):
         return sizer
 
     def checkwidgets(self):
+        """
+        The checkwidgets method creats a vertical wx.boxsizer for the checkbox inputs available in the setting panel. it
+        also creates a unique id for each item which is used in reading the inputs.
+        :return: The wx.boxsizer instance, containing the statictext buttons and CheckBox fields is returned.
+        """
         sizer = wx.BoxSizer(wx.VERTICAL)
         id = 1000
         for item in self.checkinputs:
@@ -139,6 +179,10 @@ class SettingPanel(wx.Panel):
         return sizer
 
     def units(self):
+        """
+        The units methods creates a horizontal wx.sizer for selecting 'cm' or 'px'.
+        :return: wx.horizontal sizer is returned.
+        """
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         header = wx.StaticText(self, label='Return Units:')
         units = wx.Choice(self, choices=['CM', 'PIX'], id=5000)
@@ -147,6 +191,12 @@ class SettingPanel(wx.Panel):
         return sizer
 
     def xyfields(self, id):
+        """
+        the xyfields method creates a horizontal sizer with wx.statictext widgets for x,y and unit with the appropriate
+        textctrl and id for each widget.
+        :param id: id is a hardcoded number set in checkwidgets.
+        :return: The wx.horizontal sizer is returned.
+        """
         x = wx.StaticText(self, label='X')
         y = wx.StaticText(self, label='Y')
         unit = wx.StaticText(self, label='Unit')
@@ -158,6 +208,12 @@ class SettingPanel(wx.Panel):
         return sizer
 
     def segmentfields(self, id):
+        """
+        the segmentfields methods creates a horizontal sizer containing start and end labels and inputs for the segments
+        method. If segments is expanded in the future, this method should be called to create the input fields.
+        :param id: id is a hardcoded number set in checkwidgets.
+        :return: The wx.horizontal sizer is returned.
+        """
         x = wx.StaticText(self, label='Start')
         y = wx.StaticText(self, label='End')
         xinput = wx.TextCtrl(self, id=id)
@@ -168,7 +224,16 @@ class SettingPanel(wx.Panel):
 
 
 class SettingsList(wx.ListCtrl):
+    """
+    The Settingslist panel contains a list of all available settings
+    """
     def __init__(self, parent, settingfolder):
+        """
+        The constructor methods adds all .json files to the settinglist panel
+        :param parent: Mainpanel
+        :param settingfolder: The global settingfolder as identified by user on current or previous iterations of
+        pyselector.
+        """
         super().__init__(parent=parent, style=wx.LC_REPORT)
         self.InsertColumn(0, "Name")
         self.settingfolder = settingfolder
@@ -177,6 +242,10 @@ class SettingsList(wx.ListCtrl):
             self.InsertItem(0, item)
 
     def refresh(self):
+        """
+        The refresh method resets the settings in the settinglist. Similar to the constructor, it reads the json files
+        directly from file.
+        """
         # find a nicer way to do this
         self.DeleteAllItems()
         all_settings = [x for x in os.listdir(self.settingfolder) if x.endswith(".json")]
@@ -185,7 +254,15 @@ class SettingsList(wx.ListCtrl):
 
 
 class SettingButtonPanel(wx.Panel):
+    """
+    The settingbuttonpanel contains the save,load and done button for interaction with the setting window.
+    """
     def __init__(self, parent):
+        """
+        The constructor creates , layouts and binds the save, close and load buttons. It also displays or creates
+        an input for the setting name
+        :param parent:
+        """
         super().__init__(parent=parent)
         self.parent = parent
         self.loadbutton = wx.Button(self, label=" > Load > ")
@@ -200,6 +277,10 @@ class SettingButtonPanel(wx.Panel):
         self.loadbutton.Bind(wx.EVT_BUTTON, self.load)
 
     def __dolayout(self):
+        """
+        The layout method creates, sets and fits a  vertical boxsizer for the button panel.
+        :return:
+        """
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.AddMany([
             self.loadbutton,
@@ -212,12 +293,27 @@ class SettingButtonPanel(wx.Panel):
         self.SetSizerAndFit(sizer)
 
     def save(self, event):
+        """
+        the save method is bound to the save button. It does not handle the events but propagates it upwards to the
+        mainpanel.
+        :param event: event object instance created on clicking the save button
+        """
         event.Skip()
 
     def close(self, e):
+        """
+        the close method is bound to the done button.  It closes the mainframe for the setting window.
+        :param e:
+        :return:
+        """
         self.parent.parent.Close()
 
     def load(self, e):
+        """
+        the load method is bound to the load button. It does not handle the events but propagates it upwards to the
+        mainpanel.
+        :param event: event object instance created on clicking the save button
+        """
         e.Skip()
 
 

@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="15bdcdf9-be6b-45b4-9487-2b4f4a2fdef8" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/PySelect_V1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/PySelect_V1.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/Plot_Data.py" beforeDir="false" afterPath="$PROJECT_DIR$/database/Plot_Data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gui/settingwindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/gui/settingwindow.py" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.idea/httpRequests/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -59,11 +57,56 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Plot_Data.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Plot_Data.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/database/Plot_Data.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="699">
-              <caret line="235" column="98" selection-start-line="235" selection-start-column="98" selection-end-line="235" selection-end-column="98" />
+              <caret line="235" column="97" selection-start-line="235" selection-start-column="97" selection-end-line="235" selection-end-column="97" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Read_Data.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/database/Read_Data.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="682">
+              <caret line="101" column="40" lean-forward="true" selection-start-line="101" selection-start-column="40" selection-end-line="101" selection-end-column="40" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/gui/__init__.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="15">
+              <caret line="1" column="8" selection-start-line="1" selection-start-column="8" selection-end-line="1" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/database/__init__.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="15">
+              <caret line="1" column="8" lean-forward="true" selection-start-line="1" selection-start-column="8" selection-end-line="1" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mainwindow.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/gui/mainwindow.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="174">
+              <caret line="684" column="34" lean-forward="true" selection-start-line="684" selection-start-column="34" selection-end-line="684" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="settingwindow.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/gui/settingwindow.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="293">
+              <caret line="296" column="97" selection-start-line="296" selection-start-column="97" selection-end-line="296" selection-end-column="97" />
             </state>
           </provider>
         </entry>
@@ -124,7 +167,6 @@
         <option value="$PROJECT_DIR$/dataprocessor.py" />
         <option value="$PROJECT_DIR$/database.py" />
         <option value="$PROJECT_DIR$/Gui.py" />
-        <option value="$PROJECT_DIR$/database/__init__.py" />
         <option value="$PROJECT_DIR$/gui/gui.py" />
         <option value="$USER_HOME$/Library/Caches/PyCharm2017.2/python_stubs/1012746875/wx/_core/AppConsole.py" />
         <option value="$PROJECT_DIR$/gui/test2.py" />
@@ -161,10 +203,12 @@
         <option value="$PROJECT_DIR$/requirements.txt" />
         <option value="$PROJECT_DIR$/setting/settings.json" />
         <option value="$APPLICATION_CONFIG_DIR$/scratches/scratch_3.py" />
-        <option value="$PROJECT_DIR$/gui/mainwindow.py" />
         <option value="$PROJECT_DIR$/database/Read_Data.py" />
-        <option value="$PROJECT_DIR$/gui/settingwindow.py" />
         <option value="$PROJECT_DIR$/database/Plot_Data.py" />
+        <option value="$PROJECT_DIR$/gui/__init__.py" />
+        <option value="$PROJECT_DIR$/database/__init__.py" />
+        <option value="$PROJECT_DIR$/gui/mainwindow.py" />
+        <option value="$PROJECT_DIR$/gui/settingwindow.py" />
       </list>
     </option>
   </component>
@@ -200,6 +244,16 @@
               <item name="PySelector" type="b2602c69:ProjectViewProjectNode" />
               <item name="PySelector" type="462c0819:PsiDirectoryNode" />
               <item name="database" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="PySelector" type="b2602c69:ProjectViewProjectNode" />
+              <item name="PySelector" type="462c0819:PsiDirectoryNode" />
+              <item name="gui" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="PySelector" type="b2602c69:ProjectViewProjectNode" />
+              <item name="PySelector" type="462c0819:PsiDirectoryNode" />
+              <item name="setting" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -336,6 +390,21 @@
       <option name="presentableId" value="Default" />
       <updated>1509425114915</updated>
     </task>
+    <task id="LOCAL-00001" summary="Finalized docstrings for database methods">
+      <created>1534444111456</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1534444111456</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Finalized docstrings for the mainwindow">
+      <created>1534446785097</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1534446785097</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TodoView">
@@ -352,7 +421,7 @@
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="7" sideWeight="0.4914803" weight="0.3694141" />
-      <window_info anchor="bottom" id="Event Log" order="0" sideWeight="0.26171243" side_tool="true" weight="0.3287483" />
+      <window_info anchor="bottom" id="Event Log" order="0" sideWeight="0.26171243" side_tool="true" visible="true" weight="0.22030237" />
       <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
       <window_info anchor="bottom" id="Run" order="6" sideWeight="0.73828757" weight="0.3287483" />
       <window_info anchor="bottom" id="Version Control" order="1" sideWeight="0.493517" weight="0.32844576" />
@@ -382,6 +451,11 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Finalized docstrings for database methods" />
+    <MESSAGE value="Finalized docstrings for the mainwindow" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finalized docstrings for the mainwindow" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -426,8 +500,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/miniconda3/python.app/Contents/lib/python3.6/site-packages/matplotlib/backends/backend_wx.py" />
-    <entry file="file://$USER_HOME$/miniconda3/python.app/Contents/lib/python3.6/site-packages/matplotlib/backend_bases.py" />
     <entry file="file://$USER_HOME$/miniconda3/python.app/Contents/lib/python3.6/site-packages/pandas/core/indexing.py" />
     <entry file="file://$USER_HOME$/miniconda3/envs/py27/lib/python2.7/site-packages/joblib/parallel.py" />
     <entry file="file://$USER_HOME$/miniconda3/envs/py27/lib/python2.7/copy_reg.py" />
@@ -507,33 +579,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gui/mainwindow.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3105">
-          <caret line="216" selection-start-line="216" selection-end-line="216" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gui/settingwindow.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="297">
-          <caret line="20" lean-forward="true" selection-start-line="20" selection-end-line="20" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/database/Read_Data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="20" lean-forward="true" selection-start-line="20" selection-end-line="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/setting/settings.json">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -544,7 +589,42 @@
     <entry file="file://$PROJECT_DIR$/database/Plot_Data.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="699">
-          <caret line="235" column="98" selection-start-line="235" selection-start-column="98" selection-end-line="235" selection-end-column="98" />
+          <caret line="235" column="97" selection-start-line="235" selection-start-column="97" selection-end-line="235" selection-end-column="97" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/database/Read_Data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="682">
+          <caret line="101" column="40" lean-forward="true" selection-start-line="101" selection-start-column="40" selection-end-line="101" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="8" selection-start-line="1" selection-start-column="8" selection-end-line="1" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/database/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="8" lean-forward="true" selection-start-line="1" selection-start-column="8" selection-end-line="1" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui/mainwindow.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="174">
+          <caret line="684" column="34" lean-forward="true" selection-start-line="684" selection-start-column="34" selection-end-line="684" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gui/settingwindow.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="293">
+          <caret line="296" column="97" selection-start-line="296" selection-start-column="97" selection-end-line="296" selection-end-column="97" />
         </state>
       </provider>
     </entry>
