@@ -12,7 +12,14 @@ import logging
 
 
 class MyApp(wx.App):
+    """
+    Main app class holding the frame
+    """
     def OnInit(self):
+        """
+        OnInit creates and displays the frame
+        :return:
+        """
         self.mainframe = MyFrame(None)
         self.SetTopWindow(self.mainframe)
         self.mainframe.Show()
@@ -20,7 +27,14 @@ class MyApp(wx.App):
 
 
 class MyFrame(wx.Frame):
+    """
+    The frame for holding the panel, popup menu and setting information
+    """
     def __init__(self, parent):
+        """
+        The constructor method creates the mainpanel, popup menu and binds keyevents (currently not working)
+        :param parent: MyApp
+        """
         super().__init__(parent, -1, "PySelect")
         ## Attributes
         # GUI
@@ -45,9 +59,18 @@ class MyFrame(wx.Frame):
         self.PopupMenu.Bind(wx.EVT_KEY_DOWN, self.MainPanel.ButtonPanel.keypressed)
 
     def set_settings(self, exp_name):
+        """
+        Calls mainpanels set_setting method
+        :param exp_name: Name of the experiment as selected by user
+        :return:
+        """
         self.MainPanel.set_settings(exp_name)
 
     def set_settingfolder(self, file):
+        """
+        Sets the global setting folder for the current and future uses of the program
+        :param file: File location of settings identified by the user
+        """
         with open(self.setting_json, "r+") as jsonFile:
             data = json.load(jsonFile)
             data["Location"] = file
@@ -58,19 +81,38 @@ class MyFrame(wx.Frame):
         self.MainPanel.settingfolder = file
 
     def set_exp(self, setting_name):
+        """
+        The set_exp method calls the mainpanel's set_exp method
+        :param setting_name: Name of the setting file currently selected by the user
+        """
         self.MainPanel.set_exp(setting_name)
 
     def set_size(self, size):
+        """
+        The set_size method manually sets the size of the frame
+        :param size: Wx.size object indicating the size of the frame
+        """
         self.SetSize(size)
 
     def OnClose(self, event):
+        """
+        The onclose method is bound to closing the window . It closes the wxpython app, logs finished and exists
+        the running python instance
+        """
         self.Destroy()
         logging.info('Finished')
         exit()
 
 
 class MainPanel(wx.Panel):
+    """
+    MainPanel holds the plots, setting panel and the button panel
+    """
     def __init__(self, parent):
+        """
+        The constructor method sets the background color, buttonpanel, and handles the initial layout of pyselector
+        :param parent: Myframe
+        """
         super().__init__(parent=parent)
         self.parent = parent
         self.BackgroundColour = wx.Colour('SALMON')
@@ -88,11 +130,18 @@ class MainPanel(wx.Panel):
                                         self.onVelcoityclick)
 
     def __setpanel(self):
+        """
+        The __setpanel method creates the infopanel and creates intial reach and velocity plots
+        :return:
+        """
         self.InfoPanel = InfoPanel(self)
         self.__setreachplot()
         self.__setvelocityplot()
 
     def __dolayout(self):
+        """
+        The __dolayout method creates and lays out the gridbag sizer for mainpanel
+        """
         MainPanelSizer = wx.GridBagSizer(10, 10)
         MainPanelSizer.Add(self.ReachCanvas, pos=(0, 1), span=(1, 1), flag=wx.ALIGN_CENTRE | wx.GROW)
         MainPanelSizer.Add(self.VelocityCanvas, pos=(1, 1), span=(1, 1), flag=wx.ALIGN_CENTRE | wx.GROW)
@@ -106,18 +155,28 @@ class MainPanel(wx.Panel):
         self.parent.set_size(self.Size)
 
     def __setreachplot(self):
+        """e
+        the __setreachplot creates an empty canvas and figure on load up for the reach plot
+        """
         fig = plt.figure()
         plt.axis([0, 1, 0, 1])
         self.ReachCanvas = FigureCanvas(self, -1, fig)
         self.ReachCanvas.draw()
 
     def __setvelocityplot(self):
+        """
+        the __setvelocityplot creates an empty canvas and figure on load up for the velocity plot
+        """
         fig = plt.figure()
         fig.add_axes([0.1, 0.3, 0.8, 0.4])
         fig.set_size_inches(3, 3)
         self.VelocityCanvas = FigureCanvas(self, -1, fig)
 
     def __updatereachplot(self):
+        """
+        The __updatereachplot method calculates the "selected" portion of the reach data and creates and draws
+        the reachplot on inital trial selection or on refresh instances of pyselector
+        """
         # this is somewhat prone to errors, it should be fine as long as the program  runs velocity plots
         # before reach plots though as it does now.
         selection = self.trial_data.index[
@@ -129,6 +188,11 @@ class MainPanel(wx.Panel):
         self.ReachCanvas.draw()
 
     def __updatevelocityplot(self):
+        """
+        The __updatevelocityplot handles dislpay changes in p1-p2 selection , sets the inital max velocity or updates
+        max velocity on user selection
+        :return:
+        """
         if self.Fixp1p2mode:
             self.Fixp1p2mode = False
             self.ButtonPanel.FixP1P2.Value = 0
@@ -175,6 +239,11 @@ class MainPanel(wx.Panel):
     #    self.refresh()
 
     def onVelcoityclick(self, event):
+        """
+        the onvelocityclick is bound to interactions with the velocity plot. It updates the plot appropriately
+         based on the current state of pyselector.
+        :param event: event instance on interaction with the velocity plot
+        """
         if self.Fixp1p2mode:
             self.fixp1p2(event)
             self.selected_velocity = 'pyselect'
@@ -185,6 +254,10 @@ class MainPanel(wx.Panel):
             self.refresh()
 
     def fixp1p2(self, event):
+        """
+        The fixp1p2 method resets p1 and p2 based on user selection and refreshes the plots when appropriate
+        :param event: event instance on interaction with the velocity plot when p1-p2 mode is activated
+        """
         if self.clicknum == 1:
             self.trial_data.selectedp1 = event.xdata
             self.clicknum = 2
@@ -194,10 +267,19 @@ class MainPanel(wx.Panel):
             self.refresh()
 
     def set_settings(self, setting_name):
+        """
+        the set_settings method logs the settings and updates the info panel
+        :param setting_name: String of name of the selected settings
+        """
         logging.info('setting_name set to %s \n', setting_name)
         self.InfoPanel.set_settings(setting_name)
 
     def set_exp(self, exp_name):
+        """
+        the set_exp method logs the experiment name and updates the info panel. If no settings has been selected yet,
+        it creates and displays up a warning message.
+        :param exp_name: String of name of the selected experiment
+        """
         logging.info('exp_name set to %s \n', exp_name)
         if self.InfoPanel.setting.GetLabel() == 'None':
             self.warningmsg.ShowModal()
@@ -212,6 +294,11 @@ class MainPanel(wx.Panel):
             self.InfoPanel.set_exp(self.experiment_name, self.experiment)
 
     def set_trial_data(self, trial):
+        """
+        the set_trial_data method logs the active trial on trial change and updates the trial_data attribute of
+        the class for the appropriate trialnumber and refreshes the plot
+        :param trial: the trial number (NOT INDEX)
+        """
         logging.info('=================== \n')
         logging.info('trial set to %s \n ', trial)
         logging.info('=================== \n')
@@ -220,6 +307,10 @@ class MainPanel(wx.Panel):
         self.refresh()
 
     def refresh(self):
+        """
+        The refresh method logs refresh on every call. It updates the velocityplot, reachplot, infopanel and
+        creates the appropriate layout for pyselector.
+        """
         logging.info('REFRESH \n')
         self.__updatevelocityplot()
         self.__updatereachplot()
@@ -229,6 +320,10 @@ class MainPanel(wx.Panel):
         self.Layout()
 
     def updateoutput(self):
+        """
+        The updateoutput method updates the output dataframe of the experiment dictionary for mainpanel.  It sets
+        the selected portion, p1-p2 and the max velocity index as accepted/rejected by user
+        """
         maxvel_idx = next(
             x[0] for x in enumerate(self.trial_data.time_ms) if x[1] >= self.trial_data.selectedmaxvelocity)
         p1_idx = next(x[0] for x in enumerate(self.trial_data.time_ms) if x[1] >= self.trial_data.selectedp1)
@@ -238,10 +333,17 @@ class MainPanel(wx.Panel):
         self.experiment['output'].update(self.trial_data)
 
     def outputdata(self):
+        """
+        the outputdata method creates and writes the output csv file of pyselector
+        :return:
+        """
         self.experiment['output'].to_csv(os.path.join(self.experiment_path, self.output_name + '.csv'), index=False)
 
 
 class InfoPanel(wx.Panel):
+    """
+    Infopanel contains basic information about the current trial, setting and experiment
+    """
     def __init__(self, parent):
         super().__init__(parent=parent)
         self.parent = parent
@@ -264,14 +366,30 @@ class InfoPanel(wx.Panel):
         self.SetSizer(sizer)
 
     def update(self):
+        """
+        The update method sets the trial label and the accepted/rejected mode of info panel.
+        :return:
+        """
         self.trial.SetLabel(str(self.current_trial) + '/' + str(self.all_trials.iloc[-1]))
         self.set_mode()
 
     def set_settings(self, setting_name):
+        """
+        the set_settings method updates setting label on selection.
+        :param setting_name: string name of the currently selected settings
+        """
         self.setting.SetLabel(os.path.splitext(setting_name)[0])
         self.parent.Refresh()
 
     def update_trial_index(self, direction):
+        """
+        The update_trial_index calculates and updates the current trial number and index for pyselector. It also
+        calls the set_trial_data method of mainpanel to refresh pyselector accordingly. This method updates and sets
+        the global trial number for the current state of pyselector.
+        :param direction: direction can be 'up' for going to next trial  , 'down' for last trial or an integer when
+        the go button is used.
+        :return:
+        """
         if isinstance(direction, (int, float)):
             self.current_trial = direction
             self.trial_index = np.where(self.all_trials.unique() == self.current_trial)[0][0]
@@ -285,6 +403,12 @@ class InfoPanel(wx.Panel):
         self.parent.set_trial_data(self.current_trial)
 
     def set_exp(self, exp_name, experiment):
+        """
+        The set_exp method updates the experiment label in info panel. It also sets the initial trial and mode for
+        pyselector
+        :param exp_name: String name of the experiment selected by uesr
+        :param experiment: Dictionary containing output and grouped trial information for the current experiment
+        """
         self.experiment.SetLabel(exp_name)
         # ====  RECODE maybe? / there has to be a nicer way of handling this
         self.current_trial = experiment['output'].trial_no.iloc[self.trial_index]
@@ -294,6 +418,9 @@ class InfoPanel(wx.Panel):
         self.set_mode()
 
     def set_mode(self):
+        """
+        the set_mode method sets the label for the current mode of pyselector
+        """
         accepted = np.unique(self.parent.trial_data.accept)[0]
         if accepted == 1:
             self.trial_mode.SetLabel('Accepted')
@@ -304,7 +431,14 @@ class InfoPanel(wx.Panel):
 
 
 class ButtonPanel(wx.Panel):
+    """
+    ButtonPanel contains all buttons for user interaction with pyselector
+    """
     def __init__(self, parent):
+        """
+        The constrcutor creates the button and a horizontal wx.boxsizer for holding them
+        :param parent: Mainpanel. It also binds button interactions with appropriate methods.
+        """
         super().__init__(parent=parent)
         self.parent = parent
         self.SetFocus()
@@ -347,6 +481,10 @@ class ButtonPanel(wx.Panel):
         self.Bind(wx.EVT_KEY_DOWN, self.keypressed)
 
     def keypressed(self, e):
+        """
+        The keypressed method handles right,left or down key presses by the user and updates the trial number
+        :param e: event object containing keypress information
+        """
         if e.KeyCode == wx.WXK_RIGHT:
             self.nexttrial(e)
         elif e.KeyCode == wx.WXK_LEFT:
@@ -355,6 +493,11 @@ class ButtonPanel(wx.Panel):
             self.savetrial(e)
 
     def nexttrial(self, e):
+        """
+        The nexttrial method is bound to the "next" button. It updates the output, updates the trial index and
+        sets the appropriate mode for the next trial. It also resets all buttons to their initial state.
+        :param e: the object parameter is not used.
+        """
         if self.parent.trial_data.accept.min():
             self.parent.updateoutput()
             self.parent.InfoPanel.update_trial_index('up')
@@ -362,6 +505,13 @@ class ButtonPanel(wx.Panel):
             self.reset_buttons()
 
     def jumptotrial(self, e):
+        """
+        The jumptrial method is bound to the go button.  It updates the output, updates the trial index and
+        sets the appropriate mode for the trial if indicated by user. If the gobutton box is left blank,
+        it updates the trial index to the closest unselected or unsure trial. It also resets all buttons
+        to their inital state.
+        :param e: the event parameter is not used.
+        """
         self.parent.updateoutput()
         self.parent.InfoPanel.set_mode()
         if self.Goto.GetValue():
@@ -384,31 +534,62 @@ class ButtonPanel(wx.Panel):
         self.reset_buttons()
 
     def fixp1p2(self, e):
+        """
+        The fixp1p2 method is bound to the p1-p2 button. It updates the current state of pyselector to change p1-p2
+        as opposed to max_velocity on interaction with the velocity plot.
+        :param e: the event parameter is not used.
+        :return:
+        """
         self.parent.Fixp1p2mode = True
         self.FixP1P2.Value = 1
         self.SetMax.Value = 0
 
     def prvstrial(self, e):
+        """
+        The prvstrial works just like the enxttrial method. However, prvstrial does not check to make sure that the
+        current trial is accepted or rejected
+        :param e: the
+        """
         self.parent.InfoPanel.update_trial_index('down')
         self.parent.InfoPanel.set_mode()
         self.reset_buttons()
 
     def deltrial(self, e):
+        """
+        The deltrial method is bound to the reject button. It updates the trial data and the info panel to reflect
+        the rejection.
+        :param e:
+        :return:
+        """
         self.parent.trial_data['Reject'] = 1
         self.parent.trial_data['accept'] = -1
         self.Save.SetValue(0)
         self.parent.InfoPanel.set_mode()
 
     def savetrial(self, e):
+        """
+        The savetrial method is bound to the accept button. It updates the trial data and the info panel to reflect
+        the rejection.
+        :param e:
+        """
         self.parent.trial_data['accept'] = 1
         self.parent.trial_data['Reject'] = -1
         self.Delete.SetValue(0)
         self.parent.InfoPanel.set_mode()
 
     def unsuretrial(self, e):
+        """
+        The unsuretrial method is bound to the unsure button. It updates the trial_data information for future output.
+        :param e:
+        :return:
+        """
         self.parent.trial_data['Unsure'] = 1
 
     def reset_buttons(self):
+        """
+        The reset button returns all buttons to their intial state.
+        :return:
+        """
         self.SetMax.Value = 1
         self.Parent.FixP1P2 = 0
         self.FixP1P2.Value = 0
@@ -419,7 +600,15 @@ class ButtonPanel(wx.Panel):
 
 # This is the toolbar menu at the top
 class PopupMenu(wx.MenuBar):
+    """
+    The popupmenu class creates the file and setting menu in the toolbar for pyselector
+    """
     def __init__(self, parent):  # parent is mainframe
+        """
+        The constructor creates two menus for file and setting handling. It also binds interactions with the menu
+        to the appropriate functions
+        :param parent: Mainframe.
+        """
         super().__init__()
         self.parent = parent
 
@@ -455,6 +644,12 @@ class PopupMenu(wx.MenuBar):
         self.savedsettings.Bind(wx.EVT_MENU, self.choosesetting)
 
     def loadsettinggui(self, e):
+        """
+        the loadsettinggui method is bound to the interaction setting button in the menu bar. It creates and shows
+        an instance of the settingwdinwo
+        :param e:
+        :return:
+        """
         win = settingwindow.SettingFrame(self, self.parent.MainPanel.settingfolder)
         win.Show(True)
 
@@ -464,21 +659,44 @@ class PopupMenu(wx.MenuBar):
     #               self.savedsettings.Append(-1, item)
 
     def choosesetting(self, e):
+        """
+        The choosesetting method updates the global setting file of pyselector
+        :param e: event object containing information about the selected setting
+        """
         self.parent.set_settings(self.savedsettings.FindItemById(e.GetId()).GetItemLabel())
 
     def getdata(self, e):
+        """
+        the getdata method is bound to experiment selections. It calls the mainframes set_exp method.
+        :param e: the event object instance is not used. A filepicker modal is instead created and used to pass the
+        appropriate values.
+        """
         self.filepicker.ShowModal()
         self.parent.set_exp(self.filepicker.GetPath())
 
     def outputdata(self, e):
+        """
+        the output data method is bound to the save button. It creates and saves a .csv file for the current output
+        of pyselector
+        :param e:  event object instance is not used
+        """
         self.parent.MainPanel.outputdata()
 
     def getsettingfolder(self, e):
+        """
+        The getsettingfolder method creates a folder modal for the user. It updates the global setting folder for
+        the current and future instances of pyselector. It also updates the settings shown in the quick setting menu.
+        :param e: event object instance is not used
+        """
         self.folderpicker.ShowModal()
         self.parent.set_settingfolder(self.folderpicker.GetPath())
         self.getsettings()
 
     def getsettings(self):
+        """
+        The getsettings mehtod updates the quicksetting menu with the setting files avilable in the selected setting
+        folder.
+        """
         current_items = self.savedsettings.GetMenuItems()
         for item in current_items:
             self.savedsettings.DestroyItem(item)
@@ -490,6 +708,10 @@ class PopupMenu(wx.MenuBar):
 
 
 def run():
+    """
+    The run method configures the log, and starts the main loop of the app.
+    :return:
+    """
     logging.basicConfig(filename='setting/mylog.log', level=logging.DEBUG, format='%(asctime)s %(message)s')
     logging.info('================= \n')
     logging.info('Started')
