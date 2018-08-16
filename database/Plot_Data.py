@@ -53,6 +53,12 @@ def velocityupdate(data):
 
 
 def velocityprofile(data):
+    """
+    The velocityprofile method calculates interpolated data if not already done, sets p1,p2 and max velocity and
+    creates an appropriate figure
+    :param data: Pandas dataframe with information about about one trial
+    :return: Returns a figure and a max_position list.
+    """
     if not (hasattr(data, 'Interpolated_speed')):
         # VelocityPorfile/ Interpolate and draw
         if 'handx_cm' in data.keys():
@@ -136,6 +142,13 @@ def velocityprofile(data):
 
 
 def reachprofile(data, setting, targets):
+    """
+    The reachprofile method creates the reach data plot for the real and display data.
+    :param data: Pandas dataframe with information about about one trial
+    :param setting: Setting dictionary for the loaded experiment
+    :param targets: List of all the targets in the loaded experiment
+    :return: Returns the reachprofile figure
+    """
     selected_data = data.index[data.selected == 1].tolist()
     reachplotdata = data.loc[selected_data].copy()
     maxspeedidx = next(
@@ -202,11 +215,26 @@ def reachprofile(data, setting, targets):
 
 
 def calculate_speeds(x, y, Time):
+    """
+    The calculate speed method calculates 2D cartesian velocity
+    :param x: numpy array of the x_cordinates of the data
+    :param y: numpy array of the y_cordinates of the data
+    :param Time: numpy array of the time_cordinates of the data
+    :return: numpy array of the caluclated velocity
+    """
     [xdiff, ydiff, timediff] = map(np.diff, [x, y, Time])
     return np.divide(np.sqrt(np.add(np.square(xdiff), np.square(ydiff))), timediff)
 
 
 def find_position(data, time, velocity):
+    """
+    The find_position method finds the index of the position of first instance of the reach where the velocity is
+    above a certain value
+    :param data:  Pandas dataframe with information about about one trial
+    :param time:  An iterable data type with the temporal values for the trial
+    :param velocity: A number indicating the velocity thershold needed for the position
+    :return:  a 2*1 list of x and y values for the first instance passing the velocity thereshold
+    """
     x = [row[0] for row in data]
     y = [row[1] for row in data]
     velocity_idx = next(x[0] for x in enumerate(time) if x[1] >= velocity)
